@@ -102,10 +102,24 @@ namespace {
 		Graph g;
 		Vertex v1{ 1 };
 		Vertex v2{ 2 };
-		//g.addVertex(v1);
+		g.addVertex(v1);
 		EXPECT_EQ(1, g.vertices());
-		//g.addVertex(v2);
+		g.addVertex(v2);
 		EXPECT_EQ(2, g.vertices());
+	}
+	// Test removal of vertices
+	TEST(GraphTest, GraphDeleteVertices)
+	{
+		Graph g;
+		Vertex v1{ 1 };
+		Vertex v2{ 2 };
+		g.addVertex(v1);
+		g.addVertex(v2);
+		EXPECT_EQ(2, g.vertices());
+		g.deleteVertex(v2);
+		EXPECT_EQ(1, g.vertices());
+		g.deleteVertex(v1);
+		EXPECT_EQ(0, g.vertices());
 	}
 } // namespace
 
