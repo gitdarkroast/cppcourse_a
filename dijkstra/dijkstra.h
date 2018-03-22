@@ -94,7 +94,7 @@ Example:
 class AdjacentList
 {
 private:
-	std::array<std::vector<Vertex>> adjList;
+	std::vector<std::vector<Vertex>> m_vlist;
 public:
 	AdjacentList() {};
 	~AdjacentList() {};
@@ -120,7 +120,7 @@ public:
 	ConnectivityMatrix() {};
 	~ConnectivityMatrix() {};
 
-	friend std::ostream& operator<<(std::ostream& out, const ConnectivityMatrix& matrix);
+	//friend std::ostream& operator<<(std::ostream& out, const ConnectivityMatrix& matrix);
 };
 
 // Graph ADT definition
@@ -130,8 +130,8 @@ The Graph ADT manages a set of nodes with a specific representation
 class Graph
 {
 private:
-	std::vector<Vertex> m_vertices;						// The set of vertices that make up this graph
-	AdjacentList m_representation;
+	std::vector<Vertex> m_vertices;
+	std::vector<std::vector<Vertex>> m_list;
 	int m_size;
 	int m_minCost;
 	int m_maxCost;

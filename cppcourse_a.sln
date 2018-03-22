@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppcourse_a", "cppcourse_a\cppcourse_a.vcxproj", "{2D260583-FC72-44D8-AC9B-3E3ED4BE9D6D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex_01", "ex_01\ex_01.vcxproj", "{AA0B7C77-3131-48E1-90F1-F8A06C24CEDA}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dijkstra", "dijkstra\dijkstra.vcxproj", "{6F462043-4F64-4148-8EE1-3E6D0DAE4113}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dijkstra-test", "dijkstra-test\dijkstra-test.vcxproj", "{E029EDC1-0524-45D4-860D-2C35496D336C}"
@@ -26,13 +24,6 @@ Global
 		{2D260583-FC72-44D8-AC9B-3E3ED4BE9D6D}.Release|x64.Build.0 = Release|x64
 		{2D260583-FC72-44D8-AC9B-3E3ED4BE9D6D}.Release|x86.ActiveCfg = Release|Win32
 		{2D260583-FC72-44D8-AC9B-3E3ED4BE9D6D}.Release|x86.Build.0 = Release|Win32
-		{AA0B7C77-3131-48E1-90F1-F8A06C24CEDA}.Debug|x64.ActiveCfg = Debug|x64
-		{AA0B7C77-3131-48E1-90F1-F8A06C24CEDA}.Debug|x64.Build.0 = Debug|x64
-		{AA0B7C77-3131-48E1-90F1-F8A06C24CEDA}.Debug|x86.ActiveCfg = Debug|Win32
-		{AA0B7C77-3131-48E1-90F1-F8A06C24CEDA}.Release|x64.ActiveCfg = Release|x64
-		{AA0B7C77-3131-48E1-90F1-F8A06C24CEDA}.Release|x64.Build.0 = Release|x64
-		{AA0B7C77-3131-48E1-90F1-F8A06C24CEDA}.Release|x86.ActiveCfg = Release|Win32
-		{AA0B7C77-3131-48E1-90F1-F8A06C24CEDA}.Release|x86.Build.0 = Release|Win32
 		{6F462043-4F64-4148-8EE1-3E6D0DAE4113}.Debug|x64.ActiveCfg = Debug|x64
 		{6F462043-4F64-4148-8EE1-3E6D0DAE4113}.Debug|x64.Build.0 = Debug|x64
 		{6F462043-4F64-4148-8EE1-3E6D0DAE4113}.Debug|x86.ActiveCfg = Debug|Win32
