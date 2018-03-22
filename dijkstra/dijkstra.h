@@ -83,7 +83,7 @@ public:
 	}
 };
 
-// Edge List ADT definition
+// Adjacent List ADT definition
 /*
 Example:
 1->2->3->4
@@ -91,15 +91,15 @@ Example:
 3->1->4
 4
 */
-class EdgeList
+class AdjacentList
 {
 private:
-	std::vector< std::vector<Edge> > m_representation;	 // A vector of Edges
+	std::array<std::vector<Vertex>> adjList;
 public:
-	EdgeList() {};
-	~EdgeList() {};
+	AdjacentList() {};
+	~AdjacentList() {};
 
-	friend std::ostream& operator<<(std::ostream& out, const EdgeList& list);
+	//friend std::ostream& operator<<(std::ostream& out, const AdjacentList& list);
 
 };
 
@@ -131,13 +131,24 @@ class Graph
 {
 private:
 	std::vector<Vertex> m_vertices;						// The set of vertices that make up this graph
+	AdjacentList m_representation;
+	int m_size;
+	int m_minCost;
+	int m_maxCost;
+	double m_density;
 
 public:
-	Graph() {};
-	Graph(int size);
-	int vertices() { return m_vertices.size(); };		// The K value of the graph
+	Graph(int size=10, double density=0.1, int min=1, int max=10) 
+		:m_size(size), m_density(density), m_minCost(min), m_maxCost(max)
+	{};
+	int getSize() { return m_size; };
+	double getDensity() { return m_density; };
+	int getMinCost() { return m_minCost; };
+	int getMaxCost() { return m_maxCost; };
+	int vertices() { return m_vertices.size(); };
 	bool adjacent(Vertex src, Vertex dst);
 	std::vector<Vertex> neighbors(Vertex v);
+	void generate();
 	int getVertexID(Vertex v) { return v.getID(); };
 	void addVertex(Vertex v);
 	bool deleteVertex(Vertex v);

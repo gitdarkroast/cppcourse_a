@@ -1,5 +1,26 @@
 #include "pch.h" 
+#include <random>
 #include "..\dijkstra\dijkstra.h"
+
+double getRandom(double start, double end)
+{
+	std::random_device rd;
+	std::mt19937 mersenne(rd());
+	std::uniform_real_distribution<double> dist{ start, end };
+
+	double result = dist(mersenne);
+	return result;
+}
+
+int getRandom(int start, int end)
+{
+	std::random_device rd;
+	std::mt19937 mersenne(rd());
+	std::uniform_int_distribution<int> dist{ start, end };
+
+	int result = dist(mersenne);
+	return result;
+}
 
 namespace {
 
@@ -89,6 +110,16 @@ namespace {
 		ASSERT_TRUE(new Graph());
 	}
 
+	// Test default values
+	TEST(GraphTest, GraphDefaultValues)
+	{
+		Graph g;
+		EXPECT_EQ(10, g.getSize());
+		EXPECT_EQ(0.1, g.getDensity());
+		EXPECT_EQ(1, g.getMinCost());
+		EXPECT_EQ(10, g.getMaxCost());
+	}
+
 	// Test initial verticies
 	TEST(GraphTest, GraphEmptyVertices)
 	{
@@ -107,6 +138,7 @@ namespace {
 		g.addVertex(v2);
 		EXPECT_EQ(2, g.vertices());
 	}
+
 	// Test removal of vertices
 	TEST(GraphTest, GraphDeleteVertices)
 	{
@@ -120,6 +152,26 @@ namespace {
 		EXPECT_EQ(1, g.vertices());
 		g.deleteVertex(v1);
 		EXPECT_EQ(0, g.vertices());
+	}
+
+	// Test initiating Graph with random generated size
+	TEST(GraphTest, GraphTestRandomSize)
+	{
+		int size = getRandom(50, 100);
+		Graph g{ size };
+		g.generate();
+		EXPECT_EQ(size, g.vertices());
+	}
+
+	// Test initiating Graph with random generated density
+	TEST(GraphTest, GraphTestRandomDensity)
+	{
+		int size = getRandom(50, 100);
+		double density = getRandom(0.1, 1.0);
+		Graph g{ size, density };
+		g.generate();
+		EXPECT_EQ(size, g.vertices());
+		EXPECT_EQ(density, g.getDensity());
 	}
 } // namespace
 
