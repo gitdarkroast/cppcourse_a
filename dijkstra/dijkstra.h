@@ -2,6 +2,7 @@
 #include <iostream>
 #include <chrono>
 #include <vector>
+#include <random>
 
 
 // Though not part of the assignment, the following class implements a Timer,
@@ -31,25 +32,48 @@ public:
 	}
 };
 
+class Random
+{
+public:
+	Random() { };
+	double getRandom(double start, double end)
+	{
+		std::random_device rd;
+		std::mt19937 mersenne(rd());
+		std::uniform_real_distribution<double> dist{ start, end };
+
+		double result = dist(mersenne);
+		return result;
+	}
+
+	int getRandom(int start, int end)
+	{
+		std::random_device rd;
+		std::mt19937 mersenne(rd());
+		std::uniform_int_distribution<int> dist{ start, end };
+
+		int result = dist(mersenne);
+		return result;
+	}
+};
+
+
 
 // Forward declaration of Edge ADT
 class Edge;
 
 // Vertex ADT definition
-// The Vertex ADT consists of:
-//		- a vertex ID
-//		- a vector of edges - the destination end point being another vertex.
 class Vertex
 {
 private:
-	int m_id;											// ID to define the vertex
-	std::vector<Edge> m_edges;								// List of edges for this vertex
+	int m_id;
+	std::vector<Edge> m_edges;
 public:
-	Vertex(int id) :m_id(id) {};						// Constructor, default ID is 0.
+	Vertex(int id) :m_id(id) {};
 	int getID() { return m_id; };	
 	void setID(int id) { m_id = id; };
-	int degree() { return m_edges.size(); };				// The number of neighbors this vertex has
-	std::vector<Edge> neighbors() { return m_edges; };		// The list edges from this vertex.
+	int degree() { return m_edges.size(); };
+	std::vector<Edge> neighbors() { return m_edges; };
 	void addEdge(Edge e);
 	bool deleteEdge(Edge e);
 
@@ -60,9 +84,8 @@ public:
 };
 
 // Edge ADT definition
-// The Edge ADT consists of:
-//		- The endpoint pair (src,dst) of vertices
-//		- The cost of going from src to dst
+// An Edge is defined by two Vertex endpoints and the
+// cost associated from the src to the dst.
 class Edge
 {
 private:
@@ -112,26 +135,15 @@ Example:
 3	0	0	0	1
 4	0	0	0	0
 */
-class ConnectivityMatrix
-{
-private:
-	std::vector< std::vector<int> > m_representation;	// A two-dimensional array
-public:
-	ConnectivityMatrix() {};
-	~ConnectivityMatrix() {};
-
-	//friend std::ostream& operator<<(std::ostream& out, const ConnectivityMatrix& matrix);
-};
 
 // Graph ADT definition
-/*
-The Graph ADT manages a set of nodes with a specific representation
-*/
+// A set of vertices with associated edges.  Each edge has a cost
+// value attached to it.
 class Graph
 {
 private:
-	std::vector<Vertex> m_vertices;
 	std::vector<std::vector<Vertex>> m_list;
+	std::vector<Edge> m_edges;
 	int m_size;
 	int m_minCost;
 	int m_maxCost;
@@ -141,11 +153,10 @@ public:
 	Graph(int size=10, double density=0.1, int min=1, int max=10) 
 		:m_size(size), m_density(density), m_minCost(min), m_maxCost(max)
 	{};
-	int getSize() { return m_size; };
 	double getDensity() { return m_density; };
 	int getMinCost() { return m_minCost; };
 	int getMaxCost() { return m_maxCost; };
-	int vertices() { return m_vertices.size(); };
+	int vertices() { return m_size; };
 	bool adjacent(Vertex src, Vertex dst);
 	std::vector<Vertex> neighbors(Vertex v);
 	void generate();

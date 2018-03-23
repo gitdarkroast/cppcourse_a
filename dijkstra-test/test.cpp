@@ -1,28 +1,26 @@
 #include "pch.h" 
-#include <random>
 #include "..\dijkstra\dijkstra.h"
 
-double getRandom(double start, double end)
-{
-	std::random_device rd;
-	std::mt19937 mersenne(rd());
-	std::uniform_real_distribution<double> dist{ start, end };
-
-	double result = dist(mersenne);
-	return result;
-}
-
-int getRandom(int start, int end)
-{
-	std::random_device rd;
-	std::mt19937 mersenne(rd());
-	std::uniform_int_distribution<int> dist{ start, end };
-
-	int result = dist(mersenne);
-	return result;
-}
-
 namespace {
+
+	// Fixture class for the Random class
+	class RandomTest : public ::testing::Test {
+
+	};
+
+	TEST(RandomTest, RandomIntTest)
+	{
+		Random r;
+		EXPECT_GT(100, r.getRandom(10, 100));
+		EXPECT_LT(10, r.getRandom(10, 100));
+	};
+
+	TEST(RandomTest, RandomTestDouble)
+	{
+		Random r;
+		EXPECT_LT(0.1, r.getRandom(0.1, 1.0));
+		EXPECT_GT(1.0, r.getRandom(0.1, 1.0));
+	};
 
 	// Fixture class for the Vertex ADT
 	class VertexTest : public ::testing::Test
@@ -97,13 +95,11 @@ namespace {
 
 	};
 
-
-
 	// Fixture class for the Graph ADT
 	class GraphTest : public ::testing::Test
 	{
-	protected:
 	};
+
 	// Test cased for the Graph ADT implementation
 	TEST(GraphTest, GraphObjExists)
 	{
@@ -114,17 +110,17 @@ namespace {
 	TEST(GraphTest, GraphDefaultValues)
 	{
 		Graph g;
-		EXPECT_EQ(10, g.getSize());
+		EXPECT_EQ(10, g.vertices());
 		EXPECT_EQ(0.1, g.getDensity());
 		EXPECT_EQ(1, g.getMinCost());
 		EXPECT_EQ(10, g.getMaxCost());
 	}
 
 	// Test initial verticies
-	TEST(GraphTest, GraphEmptyVertices)
+	TEST(GraphTest, GraphDefaultVertices)
 	{
 		Graph g;
-		EXPECT_EQ(0, g.vertices());
+		EXPECT_EQ(10, g.vertices());
 	}
 
 	// Test addition of 2 vertices
@@ -157,7 +153,8 @@ namespace {
 	// Test initiating Graph with random generated size
 	TEST(GraphTest, GraphTestRandomSize)
 	{
-		int size = getRandom(50, 100);
+		Random r;
+		int size = r.getRandom(50, 100);
 		Graph g{ size };
 		g.generate();
 		EXPECT_EQ(size, g.vertices());
@@ -166,8 +163,10 @@ namespace {
 	// Test initiating Graph with random generated density
 	TEST(GraphTest, GraphTestRandomDensity)
 	{
-		int size = getRandom(50, 100);
-		double density = getRandom(0.1, 1.0);
+		Random r;
+		//int size = r.getRandom(50, 100);
+		int size = 5;
+		double density = r.getRandom(0.1, 0.3);
 		Graph g{ size, density };
 		g.generate();
 		EXPECT_EQ(size, g.vertices());
