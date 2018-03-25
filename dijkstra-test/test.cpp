@@ -65,28 +65,16 @@ namespace {
 		EXPECT_EQ(0, v.degree());
 	}
 
-	// Test the default Edge constructor
+	// Test the Edge constructor
 	TEST(EdgeTest, DefaultEdgeObject)
 	{
 		int id = 10;
-		Vertex v1{ id };
-		id = 11;
-		Vertex v2{ id };
-		Edge e{ v1, v2 };
-
-		EXPECT_EQ(-1, e.getCost());
-	}
-	// Test set edge weight
-	TEST(EdgeTest, SetEdgeWeight)
-	{
-		int id = 10;
-		Vertex v1{ id };
-		id = 11;
-		Vertex v2{ id };
-		Edge e{ v1, v2 };
-
-		e.setCost(11);
-		EXPECT_EQ(11, e.getCost());
+		int cost = 5;
+		
+		Edge e{ id, id+1, cost };
+		EXPECT_EQ(id, e.getSrc());
+		EXPECT_EQ(id+1, e.getDst());
+		EXPECT_EQ(cost, e.getCost());
 	}
 
 	// Fixture class for the Edge ADT
@@ -123,32 +111,6 @@ namespace {
 		EXPECT_EQ(10, g.vertices());
 	}
 
-	// Test addition of 2 vertices
-	TEST(GraphTest, GraphAddTwoVertices)
-	{
-		Graph g;
-		Vertex v1{ 1 };
-		Vertex v2{ 2 };
-		g.addVertex(v1);
-		EXPECT_EQ(1, g.vertices());
-		g.addVertex(v2);
-		EXPECT_EQ(2, g.vertices());
-	}
-
-	// Test removal of vertices
-	TEST(GraphTest, GraphDeleteVertices)
-	{
-		Graph g;
-		Vertex v1{ 1 };
-		Vertex v2{ 2 };
-		g.addVertex(v1);
-		g.addVertex(v2);
-		EXPECT_EQ(2, g.vertices());
-		g.deleteVertex(v2);
-		EXPECT_EQ(1, g.vertices());
-		g.deleteVertex(v1);
-		EXPECT_EQ(0, g.vertices());
-	}
 
 	// Test initiating Graph with random generated size
 	TEST(GraphTest, GraphTestRandomSize)

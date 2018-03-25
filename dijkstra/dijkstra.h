@@ -8,7 +8,6 @@
 // Though not part of the assignment, the following class implements a Timer,
 // allowing you to check the runtime execution of the implementation.
 // Credit: http://www.learncpp.com/cpp-tutorial/8-16-timing-your-code/
-
 class Timer
 {
 private:
@@ -32,27 +31,31 @@ public:
 	}
 };
 
+// A random generator to assist with random int and double values
+// Credit: http://www.learncpp.com/cpp-tutorial/59-random-number-generation/
 class Random
 {
+private:
+	std::random_device m_rd;
+	std::mt19937 m_mersenne;
+
 public:
-	Random() { };
+	Random() { 
+		m_mersenne = std::mt19937(m_rd());
+	};
 	double getRandom(double start, double end)
 	{
-		std::random_device rd;
-		std::mt19937 mersenne(rd());
 		std::uniform_real_distribution<double> dist{ start, end };
 
-		double result = dist(mersenne);
+		double result = dist(m_mersenne);
 		return result;
 	}
 
 	int getRandom(int start, int end)
 	{
-		std::random_device rd;
-		std::mt19937 mersenne(rd());
 		std::uniform_int_distribution<int> dist{ start, end };
 
-		int result = dist(mersenne);
+		int result = dist(m_mersenne);
 		return result;
 	}
 };
@@ -84,21 +87,23 @@ public:
 };
 
 // Edge ADT definition
-// An Edge is defined by two Vertex endpoints and the
-// cost associated from the src to the dst.
+// An Edge is defined by two endpoints and the cost.
+// The two endpoints are simply Ids of the vertices.
 class Edge
 {
 private:
-	Vertex m_src;
-	Vertex m_dst;
-	int m_cost{ -1 };
+	int m_src;
+	int m_dst;
+	int m_cost;
 public:
-	Edge(Vertex v_src, Vertex v_dst) :m_src(v_src), m_dst(v_dst) {}
-	Vertex getSrc() { return m_src; };
-	Vertex getDst() { return m_dst; };
-	void setCost(int c) { m_cost = c; };
+	Edge(int e_src, int e_dst, int e_cost)
+	 :m_src(e_src), m_dst(e_dst), m_cost(e_cost) {}
+	const int getSrc() { return m_src; };
+	const int getDst() { return m_dst; };
 	int getCost() { return m_cost; };
 
+	// We define two edegs to be the same if the endpoints
+	// are the same - note: cost is excluded
 	friend bool operator== (const Edge &e1, const Edge &e2)
 	{
 		return ((e1.m_src == e2.m_src) &&
@@ -106,35 +111,6 @@ public:
 	}
 };
 
-// Adjacent List ADT definition
-/*
-Example:
-1->2->3->4
-2->4
-3->1->4
-4
-*/
-class AdjacentList
-{
-private:
-	std::vector<std::vector<Vertex>> m_vlist;
-public:
-	AdjacentList() {};
-	~AdjacentList() {};
-
-	//friend std::ostream& operator<<(std::ostream& out, const AdjacentList& list);
-
-};
-
-// Connectivity Matrix ADT definition
-/*
-Example:
-	1	2	3	4
-1	0	1	1	1
-2	0	0	0	1
-3	0	0	0	1
-4	0	0	0	0
-*/
 
 // Graph ADT definition
 // A set of vertices with associated edges.  Each edge has a cost
@@ -143,7 +119,6 @@ class Graph
 {
 private:
 	std::vector<std::vector<Vertex>> m_list;
-	std::vector<Edge> m_edges;
 	int m_size;
 	int m_minCost;
 	int m_maxCost;
@@ -161,14 +136,49 @@ public:
 	std::vector<Vertex> neighbors(Vertex v);
 	void generate();
 	int getVertexID(Vertex v) { return v.getID(); };
-	void addVertex(Vertex v);
-	bool deleteVertex(Vertex v);
 };
 
-// openSet
-// a list of nodes with minimum cost
+// PriorityQueue ADT
+class PriorityQueue {
+private:
+	std::vector<Vertex> m_list;
+public:
+	void chgPriority(Vertex v) { m_list[0] = v; };
+	void minPriority() { m_list.erase(m_list.begin() + 0); };
+	bool contains(Vertex v)
+	{
+		for (auto const& elem : m_list)
+		{
+			if (v == elem)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	void insert(Vertex v)
+	{
+		if (!contains(v))
+		{
+			m_list.push_back(v);
+		}
+	}
+	Vertex top() { m_list.pop_back(); };
+	int size() { m_list.size(); };
+};
 
 
-// closedSet
-// a list of neighbors with associated cost
+// ShortestPathAlgo ADT
+class ShortestPathAlgo
+{
+private:
+	Graph m_graph;
+	PriorityQueue m_queue;
+public:
+	ShortestPathAlgo() {};
+	~ShortestPathAlgo() {};
+
+	std::vector<Vertex> vertices() { m_graph.vertices(); };
+
+};
 
