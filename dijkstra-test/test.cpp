@@ -94,15 +94,6 @@ namespace {
 		ASSERT_TRUE(new Graph());
 	}
 
-	// Test default values
-	TEST(GraphTest, GraphDefaultValues)
-	{
-		Graph g;
-		EXPECT_EQ(10, g.vertices());
-		EXPECT_EQ(0.1, g.getDensity());
-		EXPECT_EQ(1, g.getMinCost());
-		EXPECT_EQ(10, g.getMaxCost());
-	}
 
 	// Test initial verticies
 	TEST(GraphTest, GraphDefaultVertices)

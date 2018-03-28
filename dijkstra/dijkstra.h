@@ -1,3 +1,6 @@
+/*
+Class and method definitions for the Dijkstra's shortest path algorithm.
+*/
 #pragma once
 #include <iostream>
 #include <chrono>
@@ -84,11 +87,13 @@ public:
 	{
 		return v1.m_id == v2.m_id;
 	};
+	friend std::ostream& operator<<(std::ostream& out, const Vertex& v);
 };
 
 // Edge ADT definition
 // An Edge is defined by two endpoints and the cost.
-// The two endpoints are simply Ids of the vertices.
+// For this implementation, the two endpoints are simply Ids 
+// of the vertices.
 class Edge
 {
 private:
@@ -98,16 +103,22 @@ private:
 public:
 	Edge(int e_src, int e_dst, int e_cost)
 	 :m_src(e_src), m_dst(e_dst), m_cost(e_cost) {}
-	const int getSrc() { return m_src; };
-	const int getDst() { return m_dst; };
+	int getSrc() { return m_src; };
+	int getDst() { return m_dst; };
 	int getCost() { return m_cost; };
 
-	// We define two edegs to be the same if the endpoints
+	// We define two edges to be the same if the endpoints
 	// are the same - note: cost is excluded
 	friend bool operator== (const Edge &e1, const Edge &e2)
 	{
 		return ((e1.m_src == e2.m_src) &&
 			(e1.m_dst == e2.m_dst));
+	}
+
+	friend std::ostream& operator<<(std::ostream& out, const Edge& e)
+	{
+		out << "{ " << e.m_src << ", " << e.m_dst << ", " << e.m_cost << " }";
+		return out;
 	}
 };
 
@@ -120,65 +131,112 @@ class Graph
 private:
 	std::vector<std::vector<Vertex>> m_list;
 	int m_size;
-	int m_minCost;
-	int m_maxCost;
 	double m_density;
 
 public:
-	Graph(int size=10, double density=0.1, int min=1, int max=10) 
-		:m_size(size), m_density(density), m_minCost(min), m_maxCost(max)
+	Graph(int size=10, double density=0.1)
+		:m_size(size), m_density(density)
 	{};
 	double getDensity() { return m_density; };
-	int getMinCost() { return m_minCost; };
-	int getMaxCost() { return m_maxCost; };
 	int vertices() { return m_size; };
 	bool adjacent(Vertex src, Vertex dst);
 	std::vector<Vertex> neighbors(Vertex v);
 	void generate();
-	int getVertexID(Vertex v) { return v.getID(); };
+
+	friend std::ostream& operator<<(std::ostream& out, const Graph& g)
+	{
+		out << "Graph size: " << g.m_size << ", density: " << g.m_density << std::endl;
+		for (int i = 0; i < g.m_size; ++i)
+		{
+			for (auto const& elem : g.m_list[i])
+			{
+				 out << elem;
+
+			}
+			out << std::endl;
+		}
+		return out;
+	}
+};
+
+// Set SDT
+
+class Set {
+private:
+	int m_id;
+	int m_cost;
+public:
+	int id() { return m_id; };
+	int cost() { return m_cost; };
+	friend bool operator==(const Set& s1, const Set& s2)
+	{
+		// We do not equate the cost as that fluctuates
+		// depending which set is defined, i.e. open or closed.
+		return (s1.m_id == s2.m_id);
+	};
+	friend std::ostream& operator<<(std::ostream& out, const Set& s)
+	{
+		out << "{ " << s.m_id << ", " << s.m_cost << "}" << std::endl;
+		return out;
+	}
 };
 
 // PriorityQueue ADT
+// Implement to maintain the closed and open sets
 class PriorityQueue {
 private:
-	std::vector<Vertex> m_list;
+	std::vector<Set> m_openset;
+	std::vector<Set> m_closedset;
+
+	bool minimum(Set& min, const std::vector<Set> s);
 public:
-	void chgPriority(Vertex v) { m_list[0] = v; };
-	void minPriority() { m_list.erase(m_list.begin() + 0); };
-	bool contains(Vertex v)
+	// We start with the source in the openset
+	PriorityQueue(Set s) {
+		m_openset.push_back(s);
+	}
+
+	std::vector<Set> openset() { return m_openset; };
+	std::vector<Set> closedset() { return m_closedset; };
+
+	bool contains(Set e, std::vector<Set> s)
 	{
-		for (auto const& elem : m_list)
+		for (auto const& elem : s)
 		{
-			if (v == elem)
+			if (elem == e)
 			{
 				return true;
 			}
 		}
 		return false;
 	}
-	void insert(Vertex v)
+	void insert(Set s, std::vector<Set> set)
 	{
-		if (!contains(v))
+		if (!contains(s, set))
 		{
-			m_list.push_back(v);
+			set.push_back(e);
 		}
 	}
-	Vertex top() { m_list.pop_back(); };
-	int size() { m_list.size(); };
+	bool moveToOpen(Edge e)
+	{
+		return true;
+	}
 };
 
 
-// ShortestPathAlgo ADT
-class ShortestPathAlgo
+// ShortestPath ADT
+class ShortestPath
 {
 private:
+	int m_totalCost;
 	Graph m_graph;
 	PriorityQueue m_queue;
 public:
-	ShortestPathAlgo() {};
-	~ShortestPathAlgo() {};
+	ShortestPath(Graph g) : m_graph(g), m_totalCost(0) {};
+	~ShortestPath() {};
 
-	std::vector<Vertex> vertices() { m_graph.vertices(); };
+	int vertices() { return m_graph.vertices(); };
+	bool path(Vertex src, Vertex dst);
+	int pathCost() { return m_totalCost; };
 
 };
 
