@@ -7,6 +7,7 @@ Class and method definitions for the Dijkstra's shortest path algorithm.
 #include <vector>
 #include <random>
 
+// Some helper classes
 
 // Though not part of the assignment, the following class implements a Timer,
 // allowing you to check the runtime execution of the implementation.
@@ -65,23 +66,21 @@ public:
 
 
 
-// Forward declaration of Edge ADT
-class Edge;
-
 // Vertex ADT definition
 class Vertex
 {
 private:
 	int m_id;
-	std::vector<Edge> m_edges;
+	std::vector<int> m_neighbors;
 public:
-	Vertex(int id) :m_id(id) {};
+	Vertex(int id=0) :m_id(id) {};
 	int getID() { return m_id; };	
-	void setID(int id) { m_id = id; };
-	int degree() { return m_edges.size(); };
-	std::vector<Edge> neighbors() { return m_edges; };
-	void addEdge(Edge e);
-	bool deleteEdge(Edge e);
+	int degree() { return m_neighbors.size(); };
+	void addNeighbor(int id)
+	{
+		m_neighbors.push_back(id);
+	}
+	std::vector<int> neighbors() const { return m_neighbors; };
 
 	friend bool operator==(const Vertex &v1, const Vertex &v2)
 	{
@@ -129,7 +128,8 @@ public:
 class Graph
 {
 private:
-	std::vector<std::vector<Vertex>> m_list;
+	std::vector<Vertex> m_nodes;
+	std::vector<Edge> m_edges;
 	int m_size;
 	double m_density;
 
@@ -139,33 +139,24 @@ public:
 	{};
 	double getDensity() { return m_density; };
 	int vertices() { return m_size; };
+	std::vector<int> neighbors(Vertex src) const;
+	int edgeCost(int s_id, int d_id);
 	bool adjacent(Vertex src, Vertex dst);
-	std::vector<Vertex> neighbors(Vertex v);
 	void generate();
 
-	friend std::ostream& operator<<(std::ostream& out, const Graph& g)
-	{
-		out << "Graph size: " << g.m_size << ", density: " << g.m_density << std::endl;
-		for (int i = 0; i < g.m_size; ++i)
-		{
-			for (auto const& elem : g.m_list[i])
-			{
-				 out << elem;
-
-			}
-			out << std::endl;
-		}
-		return out;
-	}
+	friend std::ostream& operator<<(std::ostream& out, const Graph& g);
 };
 
 // Set SDT
 
+// Want to be able to manage open and closed sets.
+// Each containing vertex id as costs.
 class Set {
 private:
 	int m_id;
 	int m_cost;
 public:
+	Set(int id, int cost) : m_id(id), m_cost(cost) {};
 	int id() { return m_id; };
 	int cost() { return m_cost; };
 	friend bool operator==(const Set& s1, const Set& s2)
@@ -185,41 +176,29 @@ public:
 // Implement to maintain the closed and open sets
 class PriorityQueue {
 private:
-	std::vector<Set> m_openset;
-	std::vector<Set> m_closedset;
+	std::vector<Set> m_set;
 
-	bool minimum(Set& min, const std::vector<Set> s);
+	bool minimum(Set& min);
 public:
-	// We start with the source in the openset
-	PriorityQueue(Set s) {
-		m_openset.push_back(s);
-	}
-
-	std::vector<Set> openset() { return m_openset; };
-	std::vector<Set> closedset() { return m_closedset; };
-
-	bool contains(Set e, std::vector<Set> s)
+	bool contains(int id)
 	{
-		for (auto const& elem : s)
+		for (auto& elem : m_set)
 		{
-			if (elem == e)
+			if (id == elem.id())
 			{
 				return true;
 			}
 		}
 		return false;
 	}
-	void insert(Set s, std::vector<Set> set)
+	void insert(Set s)
 	{
-		if (!contains(s, set))
+		if (!contains(s.id()))
 		{
-			set.push_back(e);
+			m_set.push_back(s);
 		}
 	}
-	bool moveToOpen(Edge e)
-	{
-		return true;
-	}
+	bool isEmpty() { return 0 == m_set.size(); };
 };
 
 
@@ -229,7 +208,8 @@ class ShortestPath
 private:
 	int m_totalCost;
 	Graph m_graph;
-	PriorityQueue m_queue;
+	PriorityQueue m_openset;
+	PriorityQueue m_closedset;
 public:
 	ShortestPath(Graph g) : m_graph(g), m_totalCost(0) {};
 	~ShortestPath() {};
